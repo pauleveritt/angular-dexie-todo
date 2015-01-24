@@ -11,15 +11,13 @@
 <div class="container" ng-controller="AppController as ctrl">
   <h1>Demo 1: ToDo</h1>
 
-  <form>
+  <form ng-submit="ctrl.addToDo(ctrl.newTitle)">
     <input ng-model="ctrl.newTitle" placeholder="Type something"/>
   </form>
-  <ul>
-  </ul>
   <table class="table table-striped table-condensed"
          style="width: 300px">
     <tbody>
-    <tr ng-repeat="todo in ctrl.todos">
+    <tr ng-repeat="todo in ctrl.todos | orderBy:'text'">
       <td ng-bind="todo.text">todo text</td>
       <td width="40px">
         <button ng-click="ctrl.deleteToDo(todo._id)">
