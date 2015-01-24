@@ -1,12 +1,11 @@
 (function () {
-  angular.module('app', []);
   var db = new Dexie("todos-dexie");
   var input = document.querySelector('input');
   var ul = document.querySelector('ul');
   document.body.addEventListener('submit', onSubmit);
   document.body.addEventListener('click', onClick);
 
-  db.version(1).stores({todo: '_id'})
+  db.version(1).stores({todo: '_id'});
   db.open()
     .then(refreshView);
 
@@ -43,4 +42,36 @@
   function todoToHtml(todo) {
     return '<li><button id="' + todo._id + '">delete</button>' + todo.text + '</li>';
   }
+
+  function AppController($scope) {
+    var ctrl = this;
+    ctrl.todos = [];
+    ctrl.newTitle = '';
+    db.todo.toArray(function (todos) {
+      $scope.$apply(function () {
+        ctrl.todos = todos;
+      })
+    });
+
+    ctrl.addToDo = function (newTitle) {
+      $scope.$apply(function () {
+        db.todo.put({text: newTitle, _id: String(Date.now())})
+          .then(function () {
+                  ctrl.newTitle = '';
+                });
+      });
+    };
+
+    ctrl.deleteToDo = function (id) {
+      $scope.$apply(function () {
+        db.todo.where('_id').equals(id).delete()
+          .then(refreshView);
+      });
+    };
+  }
+
+  angular.module('app', [])
+    .controller('AppController', AppController);
+
+
 }());
