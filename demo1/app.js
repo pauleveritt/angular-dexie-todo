@@ -1,9 +1,10 @@
 (function () {
-  var db = new Dexie('todos');
-  db.version(1).stores({todo: '_id'});
-  db.open();
 
   function AppController($scope, $window) {
+    var db = new Dexie('todos');
+    db.version(1).stores({todo: '_id'});
+    db.open();
+
     var ctrl = this;
     ctrl.todos = [];
     ctrl.newTitle = '';
