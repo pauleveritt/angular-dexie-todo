@@ -90,19 +90,22 @@ NgDexie.prototype.init = function (name, configuration, debug) {
   }
 
 
-
   configuration.call(self, db);
   db.open();
   deferred.resolve(db);
-  db.syncable.on('statusChanged', function (newStatus, url) {
-    self.getScope().$apply(function () {
-      self.getScope().$broadcast("ngDexieStatusChanged", {
-        status: newStatus,
-        statusText: Dexie.Syncable.StatusTexts[newStatus],
-        url: url
+
+
+  if (db.syncable) {
+    db.syncable.on('statusChanged', function (newStatus, url) {
+      self.getScope().$apply(function () {
+        self.getScope().$broadcast("ngDexieStatusChanged", {
+          status: newStatus,
+          statusText: Dexie.Syncable.StatusTexts[newStatus],
+          url: url
+        });
       });
     });
-  });
+  }
 
   // Make sure we log it when the database is locked
   db.on('blocked', function () {
@@ -152,6 +155,21 @@ NgDexie.prototype.get = function (storeName, key) {
     deferred.resolve(data);
   });
   return deferred.promise;
+};
+
+/**
+ * Delete one entrie from the database
+ * @param {type} storeName
+ * @param {type} key
+ * @returns {NgDexie@call;getQ@call;defer.promise}
+ */
+NgDexie.prototype.delete = function (storeName, key) {
+  var deferred = this.getQ().defer();
+  this.getDb().table(storeName).where('_id').equals(key).delete(function (data) {
+    deferred.resolve(data);
+  });
+  return deferred.promise;
+
 };
 
 /**

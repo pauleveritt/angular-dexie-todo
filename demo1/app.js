@@ -1,58 +1,64 @@
 (function () {
 
-  function AppController($scope, $window) {
-    var db = new Dexie('todos');
-    db.version(1).stores({todo: '_id'});
-    db.open();
+  function AppController($scope, ngDexie) {
+    //var db = new Dexie('todos');
+    //db.version(1).stores({todo: '_id'});
+    //db.open();
 
     var ctrl = this;
     ctrl.todos = [];
     ctrl.newTitle = '';
 
-    function refresh() {
-      db.todo.toArray(function (todos) {
-        $scope.$apply(function () {
-          ctrl.todos = todos;
-        })
-      });
-    }
+    var load = function () {
+      ngDexie.list('todo')
+        .then(function (data) {
+                ctrl.todos = data;
+              });
+    };
 
-    refresh();
+    // Initial load
+    load();
+
+    ngDexie.db.on('changes', function (changes) {
+      for (var index = 0; index < changes.length; index++) {
+        if (changes[index].table === 'todo') {
+          load();
+          break;
+        }
+      }
+    });
 
     ctrl.addToDo = function (newTitle) {
-      console.log('adding', newTitle)
-      db.todo.put({text: newTitle, _id: String(Date.now())})
+      ngDexie.put('todo', {text: newTitle, _id: String(Date.now())})
         .then(function () {
                 ctrl.newTitle = '';
               });
     };
 
     ctrl.deleteToDo = function (id) {
-      db.todo.where('_id').equals(id).delete();
+      ngDexie.delete('todo', id);
     };
-
-    $window.db = db;
-
-    // Listeners
-    db.todo.hook('deleting', function (primKey, obj, transaction) {
-      this.onsuccess = function () {
-        refresh();
-      }
-    });
-    db.todo.hook('creating', function (primKey, obj, transaction) {
-      this.onsuccess = function () {
-        refresh();
-      }
-    });
-    db.todo.hook('updating', function (primKey, obj, transaction) {
-      this.onsuccess = function () {
-        refresh();
-      }
-    });
   }
 
-  angular.module('app', [])
-    .controller('AppController', AppController);
+  function ModuleRun($log, ngDexie) {
+    var configuration = function (db) {
+      db.version(1).stores({
+                             todo: '_id'
+                           });
+      db.on('error', function (err) {
+        $log.error("db error", err);
+      });
+    };
 
+    ngDexie.init('ToDoList', configuration, false)
+      .then(function () {
+              $log.debug('Opened ToDoList Database');
+            });
+
+  }
+
+  angular.module('app', ['idb.utils'])
+    .run(ModuleRun)
+    .controller('AppController', AppController);
 
 }());
