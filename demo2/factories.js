@@ -1,26 +1,29 @@
-function BoundQueryFactory($rootScope) {
+function BoundQueryFactory($log, ngDexie) {
   var _this = this;
-  _this.request = {
-    counter: 0
-  };
+  _this.storage = null;
+  _this.query = null;
 
-  $rootScope.$on('reacht-newgeneration', function () {
-    _this.request.counter++;
+  //$rootScope.$on('reacht-newgeneration', function () {
+  //  _this.request.counter++;
+  //});
+
+  ngDexie.db.on('changes', function (changes) {
+    for (var index = 0; index < changes.length; index++) {
+      if (changes[index].table === _this.storage) {
+        _this.query();
+        $log.debug('Changed query data');
+        break;
+      }
+    }
   });
-  return function (query, storages) {
-    // Query is a way to express how you want the data found. It can
-    // be done as declarative (an object) or imperative (a function,
-    // or an array of functions run as a chain of promises.
-    //
-    // A simple query can pass in these items in the object:
-    //
-    // storage: a string with the name of the IndexedDB storage to use
-    //
-    // The result is a promise that resolves to the value stored here
 
-    // Storages is a way to help the
-    _this.request.counter++;
-    return _this.request;
+  return function (storage, query, defaultValue) {
+    _this.storage = storage;
+    _this.query = query;
+    _this.defaultValue = defaultValue;
+
+    // Run query the first time
+    query();
   }
 }
 
