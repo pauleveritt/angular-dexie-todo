@@ -41,7 +41,29 @@ function ModuleConfig($stateProvider, $urlRouterProvider) {
            })
     .state('todolists.todolist', {
              url: '/{todolistId}',
-             templateUrl: 'templates/todolist.html'
+             templateUrl: 'templates/todolist.html',
+             controller: 'TodoListController as ctrl',
+             controllerAs: 'ctrl',
+             resolve: {
+               queries: function (BoundQuery, ngDexie, $stateParams) {
+                 var _this = this;
+                 _this.todolist = {};
+                 todolistId = $stateParams.todolistId;
+
+                 console.log('list id is', todolistId);
+                 BoundQuery(
+                   'todolists',
+                   function () {
+                     ngDexie.get('todolists', todolistId)
+                       .then(function (data) {
+                               _this.todolist = data;
+                             });
+                   });
+
+                 return _this;
+
+               }
+             }
            });
 
 

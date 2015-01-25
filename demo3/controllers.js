@@ -14,6 +14,13 @@ function TodoListsController(ngDexie, queries) {
   };
 }
 
+function TodoListController(queries) {
+  var ctrl = this;
+  ctrl.queries = queries;
+}
+
+
+
 function AppController(ngDexie, BoundQuery) {
 
   var ctrl = this;
@@ -43,4 +50,5 @@ function AppController(ngDexie, BoundQuery) {
 
 angular.module('app')
   .controller('TodoListsController', TodoListsController)
+  .controller('TodoListController', TodoListController)
   .controller('AppController', AppController);
