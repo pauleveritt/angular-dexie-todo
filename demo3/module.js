@@ -1,3 +1,19 @@
+function ModuleConfig($stateProvider, $urlRouterProvider) {
+  $stateProvider
+    .state('layout', {
+             abstract: true,
+             templateUrl: 'templates/layout.html',
+             controller: 'LayoutController as ctrl',
+             controllerAs: 'ctrl'
+           })
+    .state('groups', {
+             url: '/',
+             parent: 'layout',
+             template: '<h2>groups</h2>'
+           });
+  $urlRouterProvider.otherwise("/");
+}
+
 function ModuleRun($log, ngDexie) {
   var configuration = function (db) {
     db.version(1).stores(
@@ -15,5 +31,6 @@ function ModuleRun($log, ngDexie) {
 
 }
 
-angular.module('app', ['idb.utils'])
-  .run(ModuleRun);
+angular.module('app', ['ui.router', 'idb.utils'])
+  .config(ModuleConfig)
+  //.run(ModuleRun);

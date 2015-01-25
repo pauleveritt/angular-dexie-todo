@@ -1,3 +1,7 @@
+function LayoutController () {
+
+}
+
 function AppController(ngDexie, BoundQuery) {
 
   var ctrl = this;
@@ -26,4 +30,5 @@ function AppController(ngDexie, BoundQuery) {
 }
 
 angular.module('app')
+  .controller('LayoutController', LayoutController)
   .controller('AppController', AppController);

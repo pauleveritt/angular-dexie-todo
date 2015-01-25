@@ -2,45 +2,25 @@
 <html ng-app="app">
 <head>
   <meta charset="utf-8">
-  <title>Demo 1</title>
+  <title>Demo 3</title>
   <link rel="stylesheet"
         href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css">
 </head>
 <body>
 
-<div class="container" ng-controller="AppController as ctrl">
-  <h1>Demo 1: ToDo</h1>
-
-  <form ng-submit="ctrl.addToDo(ctrl.newTitle)">
-    <input ng-model="ctrl.newTitle" placeholder="Type somethingbowe"/>
-  </form>
-  <table class="table table-striped table-condensed"
-         style="width: 300px">
-    <tbody>
-    <tr ng-repeat="todo in ctrl.todos | orderBy:'text'">
-      <td ng-bind="todo.text">todo text</td>
-      <td width="40px">
-        <button ng-click="ctrl.deleteToDo(todo._id)">
-          <i class="glyphicon glyphicon-remove"></i>
-        </button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-</div>
-
+<div ui-view></div>
 <script
-    src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.10/angular.min.js">
+    src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.10/angular.js">
 </script>
 <script
-    src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.13/angular-ui-router.min.js">
+    src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.13/angular-ui-router.js">
 </script>
 <script src="../lib/Dexie.js"></script>
 <script src="../lib/Dexie.Observable.js"></script>
 <script src="../lib/Dexie.Syncable.js"></script>
 <script src="../lib/ngdexie.js"></script>
 <script src="module.js"></script>
+<script src="controllers.js"></script>
 <script src="factories.js"></script>
-<script src="app.js"></script>
 </body>
 </html>
