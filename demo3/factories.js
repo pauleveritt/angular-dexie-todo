@@ -3,10 +3,6 @@ function BoundQueryFactory($log, ngDexie) {
   _this.storage = null;
   _this.query = null;
 
-  //$rootScope.$on('reacht-newgeneration', function () {
-  //  _this.request.counter++;
-  //});
-
   ngDexie.db.on('changes', function (changes) {
     for (var index = 0; index < changes.length; index++) {
       if (changes[index].table === _this.storage) {

@@ -9,11 +9,11 @@
   <tbody>
   <tr ng-repeat="todolist in ctrl.queries.todolists | orderBy:'text'">
     <td>
-      <a ui-sref="todolists.todolist({todolistId: todolist._id})"
+      <a ui-sref="todolist.list({todolistId: todolist._id})"
          ng-bind="todolist.text"></a>
     </td>
     <td class="actions">
-      <button ng-click="ctrl.deleteToDo(todolist._id)">
+      <button ng-click="ctrl.deleteToDoList(todolist._id)">
         <i class="glyphicon glyphicon-remove"></i>
       </button>
     </td>

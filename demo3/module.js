@@ -17,7 +17,7 @@ function ModuleConfig($stateProvider, $urlRouterProvider) {
            })
     .state('todolists.list', {
              url: '/list',
-             templateUrl: 'templates/todolists_lists.html',
+             templateUrl: 'templates/todolists_list.html',
              controller: 'TodoListsController as ctrl',
              controllerAs: 'ctrl',
              resolve: {
@@ -39,8 +39,10 @@ function ModuleConfig($stateProvider, $urlRouterProvider) {
                }
              }
            })
-    .state('todolists.todolist', {
+    .state('todolist', {
              url: '/{todolistId}',
+             abstract: true,
+             parent: 'todolists',
              templateUrl: 'templates/todolist.html',
              controller: 'TodoListController as ctrl',
              controllerAs: 'ctrl',
@@ -50,7 +52,6 @@ function ModuleConfig($stateProvider, $urlRouterProvider) {
                  _this.todolist = {};
                  todolistId = $stateParams.todolistId;
 
-                 console.log('list id is', todolistId);
                  BoundQuery(
                    'todolists',
                    function () {
@@ -64,18 +65,53 @@ function ModuleConfig($stateProvider, $urlRouterProvider) {
 
                }
              }
-           });
+           })
+    .state('todolist.list', {
+             url: '/list',
+             templateUrl: 'templates/todolist_list.html',
+             controller: 'TodoListListController as ctrl',
+             controllerAs: 'ctrl',
+             resolve: {
+               todolistId: function ($stateParams) {
+                 return $stateParams.todolistId;
+               },
+               queries: function (BoundQuery, ngDexie, todolistId) {
+                 var _this = this;
+                 _this.todos = [];
 
+                 BoundQuery(
+                   'todos',
+                   function () {
+                     ngDexie.listByIndex('todos', 'listId', todolistId)
+                       .then(function (data) {
+                               _this.todos = data;
+                             });
+                   });
+
+                 return _this;
+
+               }
+             }
+           });
 
   $urlRouterProvider.otherwise("/home");
 }
 
-function ModuleRun($rootScope, $log, ngDexie) {
+
+function ModuleRun($log, ngDexie) {
   var configuration = function (db) {
     db.version(1).stores(
-      {todolists: '_id'},
-      {todo: '_id'}
+      {
+        todolists: '_id',
+        todos: '_id, listId'
+      }
     );
+    db.on("populate", function () {
+      db.todolists.put({_id: '1', text: 'First List'});
+      db.todos.put(
+        {_id: '1', listId: '1', text: 'First List Item'}
+      );
+    });
     db.on('error', function (err) {
       $log.error("db error", err);
     });
@@ -85,13 +121,6 @@ function ModuleRun($rootScope, $log, ngDexie) {
     .then(function () {
             $log.debug('Opened ToDoList Database');
           });
-
-  $rootScope
-    .$on(
-    '$stateChangeError',
-    function (event, toState, toParams, fromState, fromParams, error) {
-      console.debug('stateChangeError', error);
-    });
 
 }
 

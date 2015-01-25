@@ -9,7 +9,7 @@ function TodoListsController(ngDexie, queries) {
               ctrl.newTitle = '';
             });
   };
-  ctrl.deleteToDo = function (id) {
+  ctrl.deleteToDoList = function (id) {
     ngDexie.delete('todolists', id);
   };
 }
@@ -19,6 +19,23 @@ function TodoListController(queries) {
   ctrl.queries = queries;
 }
 
+function TodoListListController(ngDexie, queries, todolistId) {
+  var ctrl = this;
+  ctrl.queries = queries;
+  ctrl.newTitle = '';
+
+  ctrl.addToDo = function (newTitle) {
+    ngDexie
+      .put('todos',
+           {text: newTitle, _id: String(Date.now()), listId: todolistId})
+      .then(function () {
+              ctrl.newTitle = '';
+            });
+  };
+  ctrl.deleteToDo = function (id) {
+    ngDexie.delete('todolists', id);
+  };
+}
 
 
 function AppController(ngDexie, BoundQuery) {
@@ -51,4 +68,5 @@ function AppController(ngDexie, BoundQuery) {
 angular.module('app')
   .controller('TodoListsController', TodoListsController)
   .controller('TodoListController', TodoListController)
+  .controller('TodoListListController', TodoListListController)
   .controller('AppController', AppController);
