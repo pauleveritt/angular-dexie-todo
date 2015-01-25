@@ -1,5 +1,6 @@
-function LayoutController () {
-
+function TodoListsController (todolists) {
+  var ctrl = this;
+  ctrl.todolists = todolists;
 }
 
 function AppController(ngDexie, BoundQuery) {
@@ -30,5 +31,5 @@ function AppController(ngDexie, BoundQuery) {
 }
 
 angular.module('app')
-  .controller('LayoutController', LayoutController)
+  .controller('TodoListsController', TodoListsController)
   .controller('AppController', AppController);

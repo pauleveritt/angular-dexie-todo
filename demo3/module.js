@@ -2,16 +2,35 @@ function ModuleConfig($stateProvider, $urlRouterProvider) {
   $stateProvider
     .state('layout', {
              abstract: true,
-             templateUrl: 'templates/layout.html',
-             controller: 'LayoutController as ctrl',
-             controllerAs: 'ctrl'
+             templateUrl: 'templates/layout.html'
            })
-    .state('groups', {
-             url: '/',
+    .state('home', {
+             url: '/home',
              parent: 'layout',
-             template: '<h2>groups</h2>'
+             templateUrl: 'templates/home.html'
+           })
+    .state('todolists', {
+             abstract: true,
+             url: '/todolists',
+             parent: 'layout',
+             template: '<div ui-view></div>'
+           })
+    .state('todolists.list', {
+             url: '/list',
+             templateUrl: 'templates/todolists_lists.html',
+             controller: 'TodoListsController as ctrl',
+             controllerAs: 'ctrl',
+             resolve: {
+               todolists: function () {
+                 var _this = this;
+                 _this.groups = [1, 2, 3];
+                 return _this.groups;
+               }
+             }
            });
-  $urlRouterProvider.otherwise("/");
+
+
+  $urlRouterProvider.otherwise("/home");
 }
 
 function ModuleRun($log, ngDexie) {
@@ -33,4 +52,4 @@ function ModuleRun($log, ngDexie) {
 
 angular.module('app', ['ui.router', 'idb.utils'])
   .config(ModuleConfig)
-  //.run(ModuleRun);
+//.run(ModuleRun);
