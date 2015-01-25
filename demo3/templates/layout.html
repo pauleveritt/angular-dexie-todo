@@ -1,0 +1,22 @@
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed"
+              data-toggle="collapse" data-target="#navbar"
+              aria-expanded="false" aria-controls="navbar">
+      </button>
+      <a class="navbar-brand"
+         ui-sref="home">BoundQuery Demo</a>
+    </div>
+    <div id="navbar" class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li class="active">
+          <a ui-sref="todolists.list">ToDo Lists</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div id="content" class="container">
+  <div ui-view></div>
+</div>

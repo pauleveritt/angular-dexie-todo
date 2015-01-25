@@ -1,0 +1,25 @@
+<form ng-submit="ctrl.addToDo(ctrl.newTitle)">
+  <input ng-model="ctrl.newTitle" placeholder="Add list..."/>
+</form>
+<table
+    id="listing"
+    ng-show="ctrl.queries.todos.length"
+    class="table table-striped table-condensed">
+  <tbody>
+  <tr ng-repeat="todo in ctrl.queries.todos | orderBy:'text'">
+    <td>
+      <a ui-sref="todo({todoId: todo._id})"
+         ng-bind="todo.text"></a>
+    </td>
+    <td class="actions">
+      <button ng-click="ctrl.deleteToDo(todo._id)">
+        <i class="glyphicon glyphicon-remove"></i>
+      </button>
+    </td>
+  </tr>
+  </tbody>
+</table>
+<div
+    ng-show="!ctrl.queries.todos.length">
+  <em>No todos defined.</em>
+</div>
