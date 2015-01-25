@@ -1,6 +1,17 @@
-function TodoListsController (queries) {
+function TodoListsController(ngDexie, queries) {
   var ctrl = this;
   ctrl.queries = queries;
+  ctrl.newTitle = '';
+
+  ctrl.addToDoList = function (newTitle) {
+    ngDexie.put('todo', {text: newTitle, _id: String(Date.now())})
+      .then(function () {
+              ctrl.newTitle = '';
+            });
+  };
+  ctrl.deleteToDo = function (id) {
+    ngDexie.delete('todo', id);
+  };
 }
 
 function AppController(ngDexie, BoundQuery) {
