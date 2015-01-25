@@ -1,3 +1,5 @@
 <h2>Todo List:
-  <span ng-bind="ctrl.queries.todolist.text">title</span></h2>
+  <a
+      ui-sref="todolist.list({todolistId: ctrl.queries.todolist._id})"
+      ng-bind="ctrl.queries.todolist.text">title</a></h2>
 <div ui-view></div>

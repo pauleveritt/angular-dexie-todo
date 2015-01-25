@@ -92,6 +92,34 @@ function ModuleConfig($stateProvider, $urlRouterProvider) {
 
                }
              }
+           })
+      .state('todo', {
+             url: '/{todoId}',
+             parent: 'todolist',
+             templateUrl: 'templates/todo.html',
+             controller: 'TodoController as ctrl',
+             controllerAs: 'ctrl',
+             resolve: {
+               todoId: function ($stateParams) {
+                 return $stateParams.todoId;
+               },
+               queries: function (BoundQuery, ngDexie, todoId) {
+                 var _this = this;
+                 _this.todo = {};
+
+                 BoundQuery(
+                   'todos',
+                   function () {
+                     ngDexie.get('todos', todoId)
+                       .then(function (data) {
+                               _this.todo = data;
+                             });
+                   });
+
+                 return _this;
+
+               }
+             }
            });
 
   $urlRouterProvider.otherwise("/home");

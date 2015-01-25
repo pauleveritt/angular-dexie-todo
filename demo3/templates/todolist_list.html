@@ -8,7 +8,7 @@
   <tbody>
   <tr ng-repeat="todo in ctrl.queries.todos | orderBy:'text'">
     <td>
-      <a ui-sref="home"
+      <a ui-sref="todo({todoId: todo._id})"
          ng-bind="todo.text"></a>
     </td>
     <td class="actions">
