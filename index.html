@@ -11,14 +11,75 @@
 
 <div class="container">
   <h2>Investigations of Query Binding for AngularJS and IndexedDB</h2>
+
   <p>For a recent project, I was looking at ways to have data in an
     AngularJS controller automatically update itself whenever
     IndexedDB transactions were committed. As a secondary goal, I was
     interested in shifting the burden of indexeddb-wrangling to a
     third party.</p>
+
   <p>For those that can't wait, here is
-  <a href="https://github.com/pauleveritt/angular-dexie-todo">the code</a> and here is
-  <a href="demo3/">the full demo</a>.
+    <a href="https://github.com/pauleveritt/angular-dexie-todo">the
+      code</a> and here is
+    <a href="demo3/">the full demo</a>.
+  </p>
+
+  <h3>BoundQueries</h3>
+
+  <p>How we talk to IndexedDB, for this project, is less of a priority.
+    I started with a way to simplify specifying a query that would
+    update itself, and do so in a dead-simple way. This meant:</p>
+  <ul>
+    <li><em>Placeholder.</em> Allow a placeholder value to show until the
+      initial
+      value is
+      set (or, later, to show if the data disappears.)
+    </li>
+    <li><em>Async.</em>. Provide a fully query that would run async and
+      update
+      the
+      <em>my</em> context (e.g. controller or model-oriented factory)
+      when complete.
+    </li>
+    <li><em>Re-run.</em> Most crucially, background tasks could update
+      the database.If the datachanged (and an event was emitted), re-run
+      my query
+      and thus re-update my scope.
+    </li>
+    <li><em>Promises.</em> If possible, allow my query to attach
+      <code>.then</code> and error handlers to the promise,
+      <em>and</em> have these execute with the query is re-run.
+    </li>
+    <li><em>Digest.</em> Have something else worry about the Angular
+      digest cycle.
+    </li>
+  </ul>
+  <p>The BoundQuery factory (<a
+      href="https://github.com/pauleveritt/angular-dexie-todo/blob/master/demo3/factories.js">code</a>)
+    is a first attempty. It somewhat cheats: it relies on the
+    excellent, promise-driven <a
+        href="http://www.dexie.org">DexieJS</a> IndexedDB and the
+    proof-of-concept <a href="https://github.com/FlussoBV/NgDexie">ngDexie
+    </a> AngularJS wrapper. However, the scope-wrapping and
+    event-listening, passing in callback, should work with other
+    approaches.
+  </p>
+
+  <h3>The Demos</h3>
+
+  <p>
+    <a href="demo1">demo1</a>Stays small. It just shows a single list (and
+    thus single IndexedDB table). You can add and delete todo items. <a
+      href="demo2">demo2</a> re-organizes the code into a module file,
+    controllers file, and a factories file that abstracts the
+    <code>BoundQuery</code> concept.
+  </p>
+  <p>
+    <a href="demo3">demo3</a> puts the ideas more to use. It has
+    multiple todo lists and allows viewing a todo. It arranges these
+    views into a single-page application using <code>ui-router</code>
+    as a series of nested states. As you move up and down the URL
+    structure, you don't re-run queries unless you need to.
   </p>
 </div>
 <script
