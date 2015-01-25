@@ -38,6 +38,10 @@ function ModuleConfig($stateProvider, $urlRouterProvider) {
 
                }
              }
+           })
+    .state('todolists.todolist', {
+             url: '/{todolistId}',
+             templateUrl: 'templates/todolist.html'
            });
 
 
