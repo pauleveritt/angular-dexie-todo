@@ -4,13 +4,13 @@ function TodoListsController(ngDexie, queries) {
   ctrl.newTitle = '';
 
   ctrl.addToDoList = function (newTitle) {
-    ngDexie.put('todo', {text: newTitle, _id: String(Date.now())})
+    ngDexie.put('todolists', {text: newTitle, _id: String(Date.now())})
       .then(function () {
               ctrl.newTitle = '';
             });
   };
   ctrl.deleteToDo = function (id) {
-    ngDexie.delete('todo', id);
+    ngDexie.delete('todolists', id);
   };
 }
 

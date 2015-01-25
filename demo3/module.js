@@ -26,9 +26,9 @@ function ModuleConfig($stateProvider, $urlRouterProvider) {
                  _this.todolists = [];
 
                  BoundQuery(
-                   'todo',
+                   'todolists',
                    function () {
-                     ngDexie.list('todo')
+                     ngDexie.list('todolists')
                        .then(function (data) {
                                _this.todolists = data;
                              });
@@ -47,6 +47,7 @@ function ModuleConfig($stateProvider, $urlRouterProvider) {
 function ModuleRun($rootScope, $log, ngDexie) {
   var configuration = function (db) {
     db.version(1).stores(
+      {todolists: '_id'},
       {todo: '_id'}
     );
     db.on('error', function (err) {
@@ -54,7 +55,7 @@ function ModuleRun($rootScope, $log, ngDexie) {
     });
   };
 
-  ngDexie.init('ToDoList', configuration, false)
+  ngDexie.init('ToDoListApp', configuration, false)
     .then(function () {
             $log.debug('Opened ToDoList Database');
           });
