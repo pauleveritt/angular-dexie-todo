@@ -1,5 +1,19 @@
 function AppController(ngDexie) {
 
+  ngDexie.bind = function ($scope, key, def) {
+    if (angular.isUndefined($scope.$eval(key))) {
+      $parse(key).assign($scope, this.get(key, def));
+      if (!this.has(key)) this.put(key, def);
+    }
+
+    var self = this;
+    this._watchers[key + $scope.$id] = $scope.$watch(key, function (newVal) {
+      if (angular.isDefined(newVal)) self.put(key, newVal);
+    }, angular.isObject($scope[key]));
+
+    return this;
+  };
+
   var ctrl = this;
   ctrl.todos = [];
   ctrl.newTitle = '';
@@ -35,23 +49,5 @@ function AppController(ngDexie) {
   };
 }
 
-function ModuleRun($log, ngDexie) {
-  var configuration = function (db) {
-    db.version(1).stores(
-      {todo: '_id'}
-    );
-    db.on('error', function (err) {
-      $log.error("db error", err);
-    });
-  };
-
-  ngDexie.init('ToDoList', configuration, false)
-    .then(function () {
-            $log.debug('Opened ToDoList Database');
-          });
-
-}
-
-angular.module('app', ['idb.utils'])
-  .run(ModuleRun)
+angular.module('app')
   .controller('AppController', AppController);
