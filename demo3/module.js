@@ -21,10 +21,22 @@ function ModuleConfig($stateProvider, $urlRouterProvider) {
              controller: 'TodoListsController as ctrl',
              controllerAs: 'ctrl',
              resolve: {
-               todolists: function () {
+               queries: function (BoundQuery, ngDexie) {
                  var _this = this;
-                 _this.groups = [1, 2, 3];
-                 return _this.groups;
+                 _this.todos = [1, 2, 3];
+
+                 BoundQuery(
+                   'todo',
+                   function () {
+                     ngDexie.list('todo')
+                       .then(function (data) {
+                                                    console.log('in here')
+                               _this.todos = data;
+                             });
+                   });
+
+                 return _this;
+
                }
              }
            });
@@ -33,7 +45,7 @@ function ModuleConfig($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise("/home");
 }
 
-function ModuleRun($log, ngDexie) {
+function ModuleRun($rootScope, $log, ngDexie) {
   var configuration = function (db) {
     db.version(1).stores(
       {todo: '_id'}
@@ -48,8 +60,15 @@ function ModuleRun($log, ngDexie) {
             $log.debug('Opened ToDoList Database');
           });
 
+  $rootScope
+    .$on(
+    '$stateChangeError',
+    function (event, toState, toParams, fromState, fromParams, error) {
+      console.debug('stateChangeError', error);
+    });
+
 }
 
 angular.module('app', ['ui.router', 'idb.utils'])
   .config(ModuleConfig)
-//.run(ModuleRun);
+  .run(ModuleRun);

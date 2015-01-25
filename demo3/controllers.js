@@ -1,6 +1,7 @@
-function TodoListsController (todolists) {
+function TodoListsController (queries) {
   var ctrl = this;
-  ctrl.todolists = todolists;
+  ctrl.queries = queries;
+  console.log('queries', ctrl.queries.todos[0].text);
 }
 
 function AppController(ngDexie, BoundQuery) {
