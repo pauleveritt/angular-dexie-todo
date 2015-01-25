@@ -2,7 +2,8 @@ function ModuleConfig($stateProvider, $urlRouterProvider) {
   $stateProvider
     .state('layout', {
              abstract: true,
-             templateUrl: 'templates/layout.html'
+             templateUrl: 'templates/layout.html',
+             controller: 'LayoutController as ctrl'
            })
     .state('home', {
              url: '/home',
@@ -19,7 +20,6 @@ function ModuleConfig($stateProvider, $urlRouterProvider) {
              url: '/list',
              templateUrl: 'templates/todolists_list.html',
              controller: 'TodoListsController as ctrl',
-             controllerAs: 'ctrl',
              resolve: {
                queries: function (BoundQuery, ngDexie) {
                  var _this = this;
@@ -45,7 +45,6 @@ function ModuleConfig($stateProvider, $urlRouterProvider) {
              parent: 'todolists',
              templateUrl: 'templates/todolist.html',
              controller: 'TodoListController as ctrl',
-             controllerAs: 'ctrl',
              resolve: {
                queries: function (BoundQuery, ngDexie, $stateParams) {
                  var _this = this;
@@ -70,7 +69,6 @@ function ModuleConfig($stateProvider, $urlRouterProvider) {
              url: '/list',
              templateUrl: 'templates/todolist_list.html',
              controller: 'TodoListListController as ctrl',
-             controllerAs: 'ctrl',
              resolve: {
                todolistId: function ($stateParams) {
                  return $stateParams.todolistId;
@@ -82,7 +80,7 @@ function ModuleConfig($stateProvider, $urlRouterProvider) {
                  BoundQuery(
                    'todos',
                    function () {
-                     ngDexie.listByIndex('todos', 'listId', todolistId)
+                     ngDexie.list('todos')
                        .then(function (data) {
                                _this.todos = data;
                              });
@@ -93,12 +91,11 @@ function ModuleConfig($stateProvider, $urlRouterProvider) {
                }
              }
            })
-      .state('todo', {
+    .state('todo', {
              url: '/{todoId}',
              parent: 'todolist',
              templateUrl: 'templates/todo.html',
              controller: 'TodoController as ctrl',
-             controllerAs: 'ctrl',
              resolve: {
                todoId: function ($stateParams) {
                  return $stateParams.todoId;

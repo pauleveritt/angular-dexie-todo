@@ -1,3 +1,27 @@
+function LayoutController($scope, $interval, ngDexie) {
+  var ctrl = this;
+  ctrl.runRefresh = false;
+
+  var interval = $interval(function () {
+    if (ctrl.runRefresh) {
+      console.log('adding random todo to first list.');
+      var now = String(Date.now());
+      ngDexie
+        .put('todos',
+             {
+               text: now + ' Random Item',
+               _id: now,
+               listId: '1'
+             });
+    }
+  }, 5000);
+
+  $scope.$on('$destroy', function () {
+    // Make sure that the interval is destroyed too
+    $interval.cancel(interval);
+  });
+}
+
 function TodoListsController(ngDexie, queries) {
   var ctrl = this;
   ctrl.queries = queries;
@@ -33,7 +57,7 @@ function TodoListListController(ngDexie, queries, todolistId) {
             });
   };
   ctrl.deleteToDo = function (id) {
-    ngDexie.delete('todolists', id);
+    ngDexie.delete('todos', id);
   };
 }
 
@@ -44,6 +68,7 @@ function TodoController(queries) {
 
 
 angular.module('app')
+  .controller('LayoutController', LayoutController)
   .controller('TodoListsController', TodoListsController)
   .controller('TodoListController', TodoListController)
   .controller('TodoListListController', TodoListListController)

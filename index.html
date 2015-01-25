@@ -74,6 +74,7 @@
     controllers file, and a factories file that abstracts the
     <code>BoundQuery</code> concept.
   </p>
+
   <p>
     <a href="demo3">demo3</a> puts the ideas more to use. It has
     multiple todo lists and allows viewing a todo. It arranges these
@@ -81,6 +82,11 @@
     as a series of nested states. As you move up and down the URL
     structure, you don't re-run queries unless you need to.
   </p>
+
+  <p>Additionally, the home page lets you turn on a simulation of a
+    background process that gets new data. In this case, it simulates
+    jamming new todo items onto the <em>first</em> todo list every 5
+    seconds.</p>
 </div>
 <script
     src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.10/angular.js">
