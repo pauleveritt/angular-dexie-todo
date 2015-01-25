@@ -23,15 +23,14 @@ function ModuleConfig($stateProvider, $urlRouterProvider) {
              resolve: {
                queries: function (BoundQuery, ngDexie) {
                  var _this = this;
-                 _this.todos = [1, 2, 3];
+                 _this.todolists = [];
 
                  BoundQuery(
                    'todo',
                    function () {
                      ngDexie.list('todo')
                        .then(function (data) {
-                                                    console.log('in here')
-                               _this.todos = data;
+                               _this.todolists = data;
                              });
                    });
 
